@@ -1,2 +1,4 @@
 *.pyc
 *~
+#pycocoevalcap/spice/lib/stanford-corenlp-*.jar
+#pycocoevalcap/spice/tmp/

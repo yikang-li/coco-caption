@@ -7,30 +7,40 @@ from cider.cider import Cider
 from spice.spice import Spice
 
 class COCOEvalCap:
-    def __init__(self, coco, cocoRes):
+    def __init__(self, results):
         self.evalImgs = []
         self.eval = {}
         self.imgToEval = {}
-        self.coco = coco
-        self.cocoRes = cocoRes
-        self.params = {'image_id': coco.getImgIds()}
+        self.gts = {}
+        self.res = {}
+        print('Preprocessing results...'),
+        for image_id, result in enumerate(results):
+            self.gts[image_id] = [
+                {'caption': ' '.join(result['readable_result']['gt_question']), 
+                 'image_id': image_id,
+                 'image': result['image'],
+                 'id': image_id,
+                }
+            ]
+            self.res[image_id] = [
+                {'caption': ' '.join(result['readable_result']['augmented_qa'][0][0]), 
+                 'image_id': image_id,
+                 'image': result['image'],
+                 'id': image_id,
+                }
+            ]
+        print('Done.')
 
     def evaluate(self):
-        imgIds = self.params['image_id']
         # imgIds = self.coco.getImgIds()
-        gts = {}
-        res = {}
-        for imgId in imgIds:
-            gts[imgId] = self.coco.imgToAnns[imgId]
-            res[imgId] = self.cocoRes.imgToAnns[imgId]
 
         # =================================================
         # Set up scorers
         # =================================================
         print 'tokenization...'
         tokenizer = PTBTokenizer()
-        gts  = tokenizer.tokenize(gts)
-        res = tokenizer.tokenize(res)
+        gts  = tokenizer.tokenize(self.gts)
+        res = tokenizer.tokenize(self.res)
 
         # =================================================
         # Set up scorers
@@ -41,7 +51,7 @@ class COCOEvalCap:
             (Meteor(),"METEOR"),
             (Rouge(), "ROUGE_L"),
             (Cider(), "CIDEr"),
-            (Spice(), "SPICE")
+            #(Spice(), "SPICE")
         ]
 
         # =================================================
