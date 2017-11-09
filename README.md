@@ -5,7 +5,16 @@ Evaluation codes for MS COCO caption generation.
 
 ## Requirements ##
 - java 1.8.0
+    - install JRE and JDK
+    ```
+    sudo apt-get install default-jre
+    sudo apt-get install default-jdk
+    ```
 - python 2.7
+- Download related model
+    ```
+    ./get_stanford_models.sh
+    ```
 
 ## Files ##
 ./
